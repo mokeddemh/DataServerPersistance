@@ -27,7 +27,7 @@ import retrofit2.Response
 class CityModel:ViewModel() {
 
 
-    var city: City? = null
+    var cityModel: City? = null
     var cities:List<City>? = null
 
 
@@ -76,22 +76,41 @@ class CityModel:ViewModel() {
         })
     }
 
-    fun loadDetail(act:Activity,id:Int) {
+    fun loadDetail(act:Activity,city:City) {
         act.progressBar2.visibility = View.VISIBLE
-        val call = RetrofitService.endpoint.getDetailCity(id)
-        call.enqueue(object:Callback<City> {
-            override fun onResponse(call: Call<City>?, response: Response<City>?) {
-                act.progressBar2.visibility = View.GONE
-                city = response?.body()
-                displayDatail(act,city!!)
+        cityModel = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
+        if(cityModel?.detailImage==null) {
+            val call = RetrofitService.endpoint.getDetailCity(city.idCity)
+            call.enqueue(object : Callback<City> {
+                override fun onResponse(call: Call<City>?, response: Response<City>?) {
+                    act.progressBar2.visibility = View.GONE
+                    if(response?.isSuccessful!!) {
+                        cityModel = response?.body()
+                        displayDatail(act, cityModel!!)
+                        cityModel?.idCity = city.idCity
+                        cityModel?.listImage = city.listImage
+                        RoomService.appDataBase.getCityDao().updateCity(cityModel!!)
 
-            }
+                    }
+                    else {
+                        act.toast("Une erreur s'est produite")
 
-            override fun onFailure(call: Call<City>?, t: Throwable?) {
-                act.progressBar2.visibility = View.GONE
+                    }
 
-            }
-        })
+
+                }
+
+                override fun onFailure(call: Call<City>?, t: Throwable?) {
+                    act.progressBar2.visibility = View.GONE
+                    act.toast("Une erreur s'est produite")
+
+                }
+            })
+        }
+        else {
+            act.progressBar2.visibility = View.GONE
+            displayDatail(act, cityModel!!)
+        }
 
     }
 

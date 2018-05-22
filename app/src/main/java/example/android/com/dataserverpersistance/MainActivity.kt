@@ -26,21 +26,21 @@ class MainActivity : AppCompatActivity() {
 
         // Display detail data if width >= 600 dp
 
-        if (isTwoPane() && cityModel.city!=null) {
-            cityModel.displayDatail(this,cityModel.city!!)
+        if (isTwoPane() && cityModel.cityModel!=null) {
+            cityModel.displayDatail(this,cityModel.cityModel!!)
 
         }
 
         // ListView OnClick Item
 
         listcities.setOnItemClickListener { adapterView, view, i, l ->
-            val id = (adapterView.getItemAtPosition(i) as City).idCity
+            val city = (adapterView.getItemAtPosition(i) as City)
             if (isTwoPane()) {
                 // display detail data
-               cityModel.loadDetail(this,id)
+               cityModel.loadDetail(this,city)
             }
             else {
-                startActivity(intentFor<DetailActivity>("id" to id))
+                startActivity(intentFor<DetailActivity>("city" to city))
             }
             }
     }
