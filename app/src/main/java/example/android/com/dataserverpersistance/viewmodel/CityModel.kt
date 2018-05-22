@@ -11,6 +11,7 @@ import example.android.com.dataserverpersistance.adapter.CityAdapter
 import example.android.com.dataserverpersistance.R
 import example.android.com.dataserverpersistance.retrofit.RetrofitService
 import example.android.com.dataserverpersistance.baseUrl
+import example.android.com.dataserverpersistance.roomdatabase.RoomService
 import kotlinx.android.synthetic.main.fragment_detail.*
 import kotlinx.android.synthetic.main.fragment_main.*
 import org.jetbrains.anko.toast
@@ -32,39 +33,47 @@ class CityModel:ViewModel() {
 
     fun loadData(act:Activity) {
         if(cities==null) {
-
             act.progressBar1.visibility = View.VISIBLE
-            val call = RetrofitService.endpoint.getCities()
-            call.enqueue(object:Callback<List<City>> {
-                override fun onResponse(call: Call<List<City>>?, response: Response<List<City>>?) {
-                    act.progressBar1.visibility = View.GONE
-                    if(response?.isSuccessful!!) {
-                        cities = response?.body()
-                        act.progressBar1.visibility = View.GONE
-                        act.listcities.adapter = CityAdapter(act, cities!!)
-                    }
-                    else {
-                        act.toast("Une erreur s'est produite")
-                    }
-                }
-
-                override fun onFailure(call: Call<List<City>>?, t: Throwable?) {
-                    act.progressBar1.visibility = View.GONE
-                    act.toast("Une erreur s'est produite")
-                }
-
-
-            })
-
+            cities = RoomService.appDataBase.getCityDao().getCities()
+            if (cities?.size == 0) {
+                getCitiesFromRemote(act)
+            }
+            else {
+                act.progressBar1.visibility = View.GONE
+                act.listcities.adapter = CityAdapter(act, cities!!)
+            }
         }
         else {
 
             act.listcities.adapter = CityAdapter(act, cities!!)
-
         }
 
 
 
+    }
+
+    private fun getCitiesFromRemote(act:Activity) {
+        val call = RetrofitService.endpoint.getCities()
+        call.enqueue(object : Callback<List<City>> {
+            override fun onResponse(call: Call<List<City>>?, response: Response<List<City>>?) {
+                act.progressBar1.visibility = View.GONE
+                if (response?.isSuccessful!!) {
+                    cities = response?.body()
+                    act.progressBar1.visibility = View.GONE
+                    act.listcities.adapter = CityAdapter(act, cities!!)
+                    RoomService.appDataBase.getCityDao().addCities(cities!!)
+                } else {
+                    act.toast("Une erreur s'est produite")
+                }
+            }
+
+            override fun onFailure(call: Call<List<City>>?, t: Throwable?) {
+                act.progressBar1.visibility = View.GONE
+                act.toast("Une erreur s'est produite")
+            }
+
+
+        })
     }
 
     fun loadDetail(act:Activity,id:Int) {

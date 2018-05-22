@@ -1,19 +1,25 @@
 package example.android.com.dataserverpersistance.entity
 
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 import java.io.Serializable
 
 /**
  * Created by hakim on 3/11/18.
  */
 
-// The entity with default constructor
-
+@Entity(tableName = "cities")
 data class City(
+                @PrimaryKey
+                @ColumnInfo(name="city_id")
                 var idCity:Int,
+                @ColumnInfo(name="main_url")
                 var listImage:String="",
-                var detailImage:String="",
+                @ColumnInfo(name="detail_url")
+                var detailImage:String?="",
                 var name:String="",
-                var touristNumber:String="",
-                var places:String="",
-                var description:String=""):Serializable {
-}
+                @ColumnInfo(name="tourist_number")
+                var touristNumber:String?="",
+                var places:String?="",
+                var description:String?=""):Serializable
