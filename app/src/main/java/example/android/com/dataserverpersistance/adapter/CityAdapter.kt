@@ -53,7 +53,7 @@ class CityAdapter(_ctx:Context,_listCities:List<City>):BaseAdapter() {
             ).into(viewHolder.imageList)
 
         viewHolder.name.setText(listCities.get(position).name)
-        viewHolder.numberTourist.setText("${listCities.get(position).touristNumber} de touristes par an")
+        viewHolder.numberTourist.setText(listCities.get(position).touristNumber)
         return view
 
     }

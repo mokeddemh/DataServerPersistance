@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import example.android.com.dataserverpersistance.adapter.CityAdapter
 import example.android.com.dataserverpersistance.entity.City
 import example.android.com.dataserverpersistance.viewmodel.CityModel
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -20,9 +21,15 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         // View Model instance
         val cityModel = ViewModelProviders.of(this).get(CityModel::class.java)
-
-        // load data
-        cityModel.loadData(this)
+        // If the listof cities is null, load them from DB
+        if (cityModel.cities==null) {
+            // load data
+            cityModel.loadData(this)
+        }
+        else {
+            // After screen rotation, use cities of the ViewMODEL
+            listcities.adapter = CityAdapter(this, cityModel.cities!!)
+        }
 
         // Display detail data if width >= 600 dp
 

@@ -32,21 +32,19 @@ class CityModel:ViewModel() {
 
 
     fun loadData(act:Activity) {
-        if(cities==null) {
-            act.progressBar1.visibility = View.VISIBLE
+          act.progressBar1.visibility = View.VISIBLE
+            // Get cities from SQLite DB
             cities = RoomService.appDataBase.getCityDao().getCities()
+
             if (cities?.size == 0) {
+            // If the list of cities is empty, load from server and save them in SQLite DB
                 getCitiesFromRemote(act)
             }
             else {
                 act.progressBar1.visibility = View.GONE
                 act.listcities.adapter = CityAdapter(act, cities!!)
             }
-        }
-        else {
 
-            act.listcities.adapter = CityAdapter(act, cities!!)
-        }
 
 
 
@@ -61,6 +59,7 @@ class CityModel:ViewModel() {
                     cities = response?.body()
                     act.progressBar1.visibility = View.GONE
                     act.listcities.adapter = CityAdapter(act, cities!!)
+                    // save cities in SQLite DB
                     RoomService.appDataBase.getCityDao().addCities(cities!!)
                 } else {
                     act.toast("Une erreur s'est produite")
@@ -78,40 +77,50 @@ class CityModel:ViewModel() {
 
     fun loadDetail(act:Activity,city:City) {
         act.progressBar2.visibility = View.VISIBLE
+        // load city detail from SQLite DB
         cityModel = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
         if(cityModel?.detailImage==null) {
-            val call = RetrofitService.endpoint.getDetailCity(city.idCity)
-            call.enqueue(object : Callback<City> {
-                override fun onResponse(call: Call<City>?, response: Response<City>?) {
-                    act.progressBar2.visibility = View.GONE
-                    if(response?.isSuccessful!!) {
-                        cityModel = response?.body()
-                        displayDatail(act, cityModel!!)
-                        cityModel?.idCity = city.idCity
-                        cityModel?.listImage = city.listImage
-                        RoomService.appDataBase.getCityDao().updateCity(cityModel!!)
-
-                    }
-                    else {
-                        act.toast("Une erreur s'est produite")
-
-                    }
-
-
-                }
-
-                override fun onFailure(call: Call<City>?, t: Throwable?) {
-                    act.progressBar2.visibility = View.GONE
-                    act.toast("Une erreur s'est produite")
-
-                }
-            })
+            // if the city details don't exist, load details from server and update SQLite DB
+           loadDetailFromRemote(act,city)
         }
         else {
             act.progressBar2.visibility = View.GONE
             displayDatail(act, cityModel!!)
         }
 
+    }
+
+    private fun loadDetailFromRemote(act:Activity,city:City) {
+        val call = RetrofitService.endpoint.getDetailCity(city.idCity)
+        call.enqueue(object : Callback<City> {
+            override fun onResponse(call: Call<City>?, response: Response<City>?) {
+                act.progressBar2.visibility = View.GONE
+                if(response?.isSuccessful!!) {
+                    // update city model null values
+                    cityModel = response?.body()
+                    cityModel?.idCity = city.idCity
+                    cityModel?.name = city.name
+                    cityModel?.touristNumber = city.touristNumber
+                    cityModel?.listImage = city.listImage
+                    displayDatail(act, cityModel!!)
+                    // update the city in the SQLite DB to support offline mode
+                    RoomService.appDataBase.getCityDao().updateCity(cityModel!!)
+
+                }
+                else {
+                    act.toast("Une erreur s'est produite")
+
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<City>?, t: Throwable?) {
+                act.progressBar2.visibility = View.GONE
+                act.toast("Une erreur s'est produite")
+
+            }
+        })
     }
 
     fun displayDatail(act: Activity,city: City) {
@@ -121,7 +130,7 @@ class CityModel:ViewModel() {
         ).into(act.imageDetail)
 
         act.nameDetail.text = city.name
-        act.numbertouristDetail.text  =  if (city.touristNumber.toString()!="") city.touristNumber + act.getString(R.string.touristText) else  ""
+        act.numbertouristDetail.text  = city.touristNumber
         act.description.text = city.description
         act.places.text = act.getString(R.string.places)+city.places
     }
