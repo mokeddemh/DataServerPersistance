@@ -33,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         // Display detail data if width >= 600 dp
 
-        if (isTwoPane() && cityModel.cityModel!=null) {
-            cityModel.displayDatail(this,cityModel.cityModel!!)
+        if (isTwoPane() && cityModel.city!=null) {
+            cityModel.displayDatail(this,cityModel.city!!)
 
         }
 

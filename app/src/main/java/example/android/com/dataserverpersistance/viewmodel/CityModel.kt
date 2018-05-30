@@ -2,7 +2,6 @@ package example.android.com.dataserverpersistance.viewmodel
 
 import android.app.Activity
 import android.arch.lifecycle.ViewModel
-import android.util.Log
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -27,7 +26,7 @@ import retrofit2.Response
 class CityModel:ViewModel() {
 
 
-    var cityModel: City? = null
+    var city: City? = null
     var cities:List<City>? = null
 
 
@@ -78,14 +77,14 @@ class CityModel:ViewModel() {
     fun loadDetail(act:Activity,city:City) {
         act.progressBar2.visibility = View.VISIBLE
         // load city detail from SQLite DB
-        cityModel = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
-        if(cityModel?.detailImage==null) {
+        this.city = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
+        if(this.city?.detailImage==null) {
             // if the city details don't exist, load details from server and update SQLite DB
            loadDetailFromRemote(act,city)
         }
         else {
             act.progressBar2.visibility = View.GONE
-            displayDatail(act, cityModel!!)
+            displayDatail(act, this.city!!)
         }
 
     }
@@ -97,14 +96,14 @@ class CityModel:ViewModel() {
                 act.progressBar2.visibility = View.GONE
                 if(response?.isSuccessful!!) {
                     // update city model null values
-                    cityModel = response?.body()
-                    cityModel?.idCity = city.idCity
-                    cityModel?.name = city.name
-                    cityModel?.touristNumber = city.touristNumber
-                    cityModel?.listImage = city.listImage
-                    displayDatail(act, cityModel!!)
+                    this@CityModel.city = response?.body()
+                    this@CityModel.city?.idCity = city.idCity
+                    this@CityModel.city?.name = city.name
+                    this@CityModel.city?.touristNumber = city.touristNumber
+                    this@CityModel.city?.listImage = city.listImage
+                    displayDatail(act, this@CityModel.city!!)
                     // update the city in the SQLite DB to support offline mode
-                    RoomService.appDataBase.getCityDao().updateCity(cityModel!!)
+                    RoomService.appDataBase.getCityDao().updateCity(this@CityModel.city!!)
 
                 }
                 else {

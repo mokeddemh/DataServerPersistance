@@ -13,8 +13,8 @@ class DetailActivity : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         val cityModel = ViewModelProviders.of(this).get(CityModel::class.java)
         val city = intent.getSerializableExtra("city") as City
-        if (cityModel.cityModel!=null) {
-            cityModel.displayDatail(this,cityModel.cityModel!!)
+        if (cityModel.city!=null) {
+            cityModel.displayDatail(this,cityModel.city!!)
         }
         else {
             cityModel.loadDetail(this,city)
