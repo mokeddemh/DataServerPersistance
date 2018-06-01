@@ -123,7 +123,6 @@ class CityModel:ViewModel() {
     }
 
     fun displayDatail(act: Activity,city: City) {
-        val call = RetrofitService.endpoint.getDetailCity(city.idCity)
         Glide.with(act).load(baseUrl + city.detailImage).apply(
                 RequestOptions().placeholder(R.drawable.place_holder)
         ).into(act.imageDetail)
