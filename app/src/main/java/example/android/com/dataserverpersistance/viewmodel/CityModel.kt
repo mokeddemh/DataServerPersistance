@@ -79,7 +79,7 @@ class CityModel:ViewModel() {
         // load city detail from SQLite DB
         this.city = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
         if(this.city?.detailImage==null) {
-            // if the city details don't exist, load details from server and update SQLite DB
+            // if the city details don't exist, load the details from server and update SQLite DB
            loadDetailFromRemote(act,city)
         }
         else {
@@ -95,8 +95,8 @@ class CityModel:ViewModel() {
             override fun onResponse(call: Call<City>?, response: Response<City>?) {
                 act.progressBar2.visibility = View.GONE
                 if(response?.isSuccessful!!) {
-                    // update city model null values
                     this@CityModel.city = response?.body()
+                    // update city model null values
                     this@CityModel.city?.idCity = city.idCity
                     this@CityModel.city?.name = city.name
                     this@CityModel.city?.touristNumber = city.touristNumber
