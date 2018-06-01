@@ -21,13 +21,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         // View Model instance
         val cityModel = ViewModelProviders.of(this).get(CityModel::class.java)
-        // If the listof cities is null, load them from DB
+        // If the list of cities is null, load the list from DB
         if (cityModel.cities==null) {
-            // load data
             cityModel.loadData(this)
         }
         else {
-            // After screen rotation, use cities of the ViewMODEL
+            // After the rotation of the screen, use cities of the ViewModel instance
             listcities.adapter = CityAdapter(this, cityModel.cities!!)
         }
 
