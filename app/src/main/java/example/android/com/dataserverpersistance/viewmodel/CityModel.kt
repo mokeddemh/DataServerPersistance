@@ -95,15 +95,16 @@ class CityModel:ViewModel() {
             override fun onResponse(call: Call<City>?, response: Response<City>?) {
                 act.progressBar2.visibility = View.GONE
                 if(response?.isSuccessful!!) {
-                    this@CityModel.city = response?.body()
-                    // update city model null values
-                    this@CityModel.city?.idCity = city.idCity
-                    this@CityModel.city?.name = city.name
-                    this@CityModel.city?.touristNumber = city.touristNumber
-                    this@CityModel.city?.listImage = city.listImage
-                    displayDatail(act, this@CityModel.city!!)
+                    var cityDetail = response?.body()
+                    cityDetail = city.copy(
+                            description =cityDetail?.description,
+                            detailImage = cityDetail?.detailImage,
+                            places = cityDetail?.places)
+                    displayDatail(act,cityDetail)
                     // update the city in the SQLite DB to support offline mode
-                    RoomService.appDataBase.getCityDao().updateCity(this@CityModel.city!!)
+                    RoomService.appDataBase.getCityDao().updateCity(cityDetail)
+                    // update ViewModel
+                    this@CityModel.city = cityDetail
 
                 }
                 else {
