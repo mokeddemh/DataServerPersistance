@@ -1,11 +1,13 @@
 package example.android.com.dataserverpersistance
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.lifecycle.ViewModelProviders
+import example.android.com.dataserverpersistance.entity.City
+import example.android.com.dataserverpersistance.viewmodel.CityModel
 
 
 /**
@@ -20,4 +22,16 @@ class DetailFragment : Fragment() {
         return inflater!!.inflate(R.layout.fragment_detail, container, false)
     }
 
-}// Required empty public constructor
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        val idCity = arguments?.getInt("id")
+        val cityModel = ViewModelProviders.of(this).get(CityModel::class.java)
+        if (cityModel.city!=null) {
+            cityModel.displayDatail(activity!!,cityModel.city!!)
+        }
+        else {
+            cityModel.loadDetail(activity!!,idCity!!)
+        }
+    }
+}

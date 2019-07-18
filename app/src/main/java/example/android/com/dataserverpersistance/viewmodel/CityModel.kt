@@ -1,7 +1,7 @@
 package example.android.com.dataserverpersistance.viewmodel
 
 import android.app.Activity
-import android.arch.lifecycle.ViewModel
+import androidx.lifecycle.ViewModel
 import android.view.View
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
@@ -74,13 +74,13 @@ class CityModel:ViewModel() {
         })
     }
 
-    fun loadDetail(act:Activity,city:City) {
+    fun loadDetail(act:Activity,idCity:Int) {
         act.progressBar2.visibility = View.VISIBLE
         // load city detail from SQLite DB
-        this.city = RoomService.appDataBase.getCityDao().getCityById(city.idCity)
+        this.city = RoomService.appDataBase.getCityDao().getCityById(idCity)
         if(this.city?.detailImage==null) {
             // if the city details don't exist, load the details from server and update SQLite DB
-           loadDetailFromRemote(act,city)
+           loadDetailFromRemote(act,idCity)
         }
         else {
             act.progressBar2.visibility = View.GONE
@@ -89,14 +89,14 @@ class CityModel:ViewModel() {
 
     }
 
-    private fun loadDetailFromRemote(act:Activity,city:City) {
-        val call = RetrofitService.endpoint.getDetailCity(city.idCity)
+    private fun loadDetailFromRemote(act:Activity,idCity:Int) {
+        val call = RetrofitService.endpoint.getDetailCity(idCity)
         call.enqueue(object : Callback<City> {
             override fun onResponse(call: Call<City>?, response: Response<City>?) {
                 act.progressBar2.visibility = View.GONE
                 if(response?.isSuccessful!!) {
                     var cityDetail = response?.body()
-                    cityDetail = city.copy(
+                    cityDetail = city!!.copy(
                             description =cityDetail?.description,
                             detailImage = cityDetail?.detailImage,
                             places = cityDetail?.places)

@@ -1,6 +1,6 @@
 package example.android.com.dataserverpersistance.roomdao
 
-import android.arch.persistence.room.*
+import androidx.room.*
 import example.android.com.dataserverpersistance.entity.City
 
 @Dao

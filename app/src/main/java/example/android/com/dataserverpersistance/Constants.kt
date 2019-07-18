@@ -1,3 +1,3 @@
 package example.android.com.dataserverpersistance
 
-val baseUrl= "http://192.168.43.101:8082/"
+val baseUrl= "https://71603aa7.ngrok.io/"

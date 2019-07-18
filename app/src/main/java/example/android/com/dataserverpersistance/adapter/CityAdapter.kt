@@ -47,9 +47,8 @@ class CityAdapter(_ctx:Context,_listCities:List<City>):BaseAdapter() {
 
         }
             Glide.with(ctx).load(baseUrl + listCities.get(position).listImage)
-
-                    .apply(
-                    RequestOptions().placeholder(R.drawable.place_holder)
+            .apply(
+            RequestOptions().placeholder(R.drawable.place_holder)
             ).into(viewHolder.imageList)
 
         viewHolder.name.setText(listCities.get(position).name)

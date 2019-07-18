@@ -1,7 +1,7 @@
 package example.android.com.dataserverpersistance.roomdatabase
 
-import android.arch.persistence.room.Database
-import android.arch.persistence.room.RoomDatabase
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import example.android.com.dataserverpersistance.entity.City
 import example.android.com.dataserverpersistance.roomdao.CityDao
 
