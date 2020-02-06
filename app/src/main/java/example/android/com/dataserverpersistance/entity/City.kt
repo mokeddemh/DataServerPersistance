@@ -23,3 +23,5 @@ data class City(
                 var touristNumber:String?="",
                 var places:String?="",
                 var description:String?=""):Serializable
+
+
