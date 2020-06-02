@@ -15,13 +15,13 @@ data class City(
                 @ColumnInfo(name="city_id")
                 var idCity:Int,
                 @ColumnInfo(name="main_url")
-                var listImage:String="",
+                var listImage:String?,
                 @ColumnInfo(name="detail_url")
-                var detailImage:String?="",
-                var name:String="",
+                var detailImage:String?,
+                var name:String?,
                 @ColumnInfo(name="tourist_number")
-                var touristNumber:String?="",
-                var places:String?="",
-                var description:String?=""):Serializable
+                var touristNumber:String?,
+                var places:String?,
+                var description:String?)
 
 
